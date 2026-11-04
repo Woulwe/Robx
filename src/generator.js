@@ -31,7 +31,7 @@ export function generateWorld(prompt){
  }
  const objects=[];
  const add=(type,name,x,z,sx,sy,sz,color,extra={})=>{
-   const y=heightAt(x,z)+sy/2;
+   const y=(type==="water"&&name==="Океан")?-4:heightAt(x,z)+sy/2;
    objects.push({id:objects.length+1,type,name,position:[x,y,z],size:[sx,sy,sz],color,...extra});
  };
  // Surrounding sea and shoreline
