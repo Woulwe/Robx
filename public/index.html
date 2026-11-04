@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Robx Studio — AI Roblox Creator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#090d18;--panel:#111a2a;--panel2:#17243a;--line:#2a3952;--txt:#edf3ff;--muted:#98a9c2;--violet:#8b7cff;--cyan:#55d9e8}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% -20%,#2b2860 0,transparent 42%),var(--bg);color:var(--txt);font:14px Inter,system-ui,sans-serif}button,textarea,input{font:inherit}button{cursor:pointer;color:white;border:0;font-weight:700}.app{min-height:100vh;display:grid;grid-template-columns:235px 1fr}.sidebar{background:#0b1220;border-right:1px solid var(--line);padding:20px 14px;position:relative}.logo{font-size:21px;font-weight:850;letter-spacing:-.8px;padding:5px 9px 25px}.logo span{color:var(--violet)}.nav{display:grid;gap:6px}.nav button{background:transparent;color:var(--muted);text-align:left;padding:12px;border-radius:10px}.nav button.active,.nav button:hover{background:var(--panel2);color:white}.sidefoot{position:absolute;bottom:18px;left:20px;right:20px;color:#7788a1;font-size:11px;line-height:1.5}.main{width:100%;max-width:1500px;margin:auto;padding:25px clamp(14px,3vw,42px)}.top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:23px}.eyebrow{color:var(--cyan);font-size:11px;letter-spacing:1.7px;font-weight:800}.top h1{font-size:clamp(27px,4vw,39px);letter-spacing:-1.4px;margin:8px 0}.sub{color:var(--muted);line-height:1.55;max-width:720px}.tag{border:1px solid var(--line);background:#111b2d;border-radius:30px;padding:9px 12px;color:#c4d1e4;font-size:11px;white-space:nowrap}.workspace{display:grid;grid-template-columns:minmax(290px,.78fr) minmax(0,1.22fr);gap:15px}.panel{background:linear-gradient(150deg,#151f32,#101827);border:1px solid var(--line);border-radius:16px;padding:18px;min-width:0}.panel h2{font-size:16px;margin:0 0 6px}.muted{color:var(--muted);font-size:12px;line-height:1.5}.prompt{width:100%;min-height:130px;resize:vertical;background:#0a1220;border:1px solid #344660;border-radius:12px;color:white;padding:13px;outline:none;line-height:1.5;margin:14px 0 10px}.prompt:focus{border-color:var(--violet);box-shadow:0 0 0 3px #8b7cff22}.actions{display:flex;gap:8px;flex-wrap:wrap}.primary{background:linear-gradient(110deg,#7766ff,#a05cdb);padding:11px 15px;border-radius:10px}.secondary{background:#263650;padding:10px 13px;border-radius:10px}.ghost{background:#19263b;border:1px solid var(--line);padding:9px 12px;border-radius:9px;font-size:12px}.actions button:disabled{opacity:.45;cursor:wait}.templates{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 18px}.templates button{background:#1b2941;border:1px solid #2b3c57;border-radius:30px;padding:7px 10px;font-size:11px;color:#d4def0}.previewHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px}.previewWrap{position:relative;background:#0a1322;border:1px solid #2a3a54;border-radius:12px;overflow:hidden;min-height:360px}.previewWrap canvas{display:block;width:100%;height:360px}.hint{position:absolute;bottom:10px;left:12px;color:#b8c7dc;background:#09111dcc;padding:7px 9px;border-radius:8px;font-size:10px;pointer-events:none}.inspector{margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#0c1524;border:1px solid #263650;border-radius:10px;padding:10px}.stat b{font-size:18px;display:block}.stat small{color:var(--muted);font-size:10px}.result{display:none;margin-top:14px}.resultTitle{font-weight:750;margin-bottom:5px}.status{font-size:12px;color:#b8c7dc;margin-top:10px;min-height:18px}.files{display:none;margin-top:12px;border-top:1px solid var(--line);padding-top:12px}.filebtn{display:block;width:100%;text-align:left;margin:5px 0;background:#0b1525;border:1px solid #263650;padding:9px;border-radius:8px;color:#cbd8ed;font-size:11px}.modal{display:none;margin-top:10px;background:#0a1423;border:1px solid #33435c;padding:12px;border-radius:10px}.modal input{width:100%;margin:5px 0 9px;background:#111d30;border:1px solid #34445d;border-radius:8px;padding:10px;color:white}.small{font-size:10px;color:var(--muted);line-height:1.5}.footer{font-size:10px;color:#7788a1;line-height:1.5;margin:16px 2px}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{padding:12px;border-right:0;border-bottom:1px solid var(--line)}.logo{padding:0 5px 10px}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap;padding:9px}.sidefoot{display:none}.workspace{grid-template-columns:1fr}.previewWrap,.previewWrap canvas{min-height:310px;height:310px}.top{flex-direction:column}.tag{align-self:flex-start}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar"><div class="logo">Woulwe <span>Robx</span></div><nav class="nav"><button class="active">✦ Создать игру</button><button onclick="scrollToSection('preview')">◫ 3D-просмотр</button><button onclick="scrollToSection('projectFiles')">▤ Скрипты проекта</button><button onclick="openPublish()">↗ Публикация</button></nav><div class="sidefoot">Robx Studio<br>Создание Roblox-проектов прямо с телефона</div></aside>
+<main class="main">
+<div class="top"><div><div class="eyebrow">ROBLOX EXPERIENCE BUILDER</div><h1>Собери свой мир</h1><div class="sub">Опиши игру — Robx создаст процедурную карту, игровые объекты, базовые Luau-системы и подготовит файл для Roblox Studio.</div></div><div class="tag">● Серверный генератор подключён</div></div>
+<div class="workspace">
+<section class="panel">
+<h2>1. Опиши игру</h2><div class="muted">Можно написать идею на русском. Генератор распознаёт тематику и строит стартовый мир.</div>
+<textarea id="prompt" class="prompt" placeholder="Например: реалистичное выживание на огромном острове. Леса, хижины, животные, волки, ресурсы, задания, день и ночь, голод и жажда."></textarea>
+<div class="actions"><button class="primary" id="generate" onclick="generate()">✦ Создать проект</button><button class="secondary" onclick="resetAll()">Сбросить</button></div>
+<div class="templates"><button onclick="preset('Выживание на большом острове, густой лес, ресурсы, животные, волки, лагерь и смена дня и ночи.')">🌲 Выживание</button><button onclick="preset('Фэнтези RPG с древним храмом, магическим порталом, NPC, боссом и квестами.')">🐉 RPG</button><button onclick="preset('Большой современный город с дорогами, зданиями, NPC и точками интереса.')">🏙️ Город</button><button onclick="preset('Приключенческая карта с паркуром, препятствиями, контрольными точками и финальной зоной.')">🧩 Обби</button></div>
+<div id="result" class="result"><div class="resultTitle" id="resultTitle">Проект готов</div><div class="muted" id="resultSummary"></div><div class="actions" style="margin-top:12px"><button class="primary" onclick="exportProject()">⬇ Скачать .rbxlx</button><button class="secondary" onclick="downloadScripts()">Скачать Luau</button></div><div class="actions" style="margin-top:8px"><button class="ghost" onclick="openPublish()">↗ Опубликовать в Roblox</button></div><div id="publishBox" class="modal"><b style="font-size:12px">Публикация в Roblox</b><p class="small">Ключ хранится только на сервере. Настрой переменные окружения ROBLOX_API_KEY, ROBLOX_UNIVERSE_ID и ROBLOX_PLACE_ID. Не вставляй секретный ключ сюда.</p><button class="primary" onclick="publishProject()">Опубликовать текущий проект</button></div><div class="status" id="status"></div></div>
+<div class="files" id="projectFiles"><b style="font-size:12px">Luau-файлы проекта</b><div id="fileList"></div></div>
+<div class="footer">Экспорт создаёт стартовую сцену и скрипты. Проверь проект в Roblox Studio перед публикацией. Анимированные модели и полноценная игровая логика требуют дальнейшей доработки.</div>
+</section>
+<section class="panel" id="preview">
+<div class="previewHead"><div><h2>2. 3D-просмотр мира</h2><div class="muted">Вращай сцену, приближай и выбирай объекты.</div></div><span class="tag" id="objectCount">0 объектов</span></div>
+<div class="previewWrap"><canvas id="scene"></canvas><div class="hint">Потяни пальцем для вращения · масштаб двумя пальцами</div></div>
+<div class="inspector"><div class="stat"><b id="statObjects">0</b><small>ОБЪЕКТОВ</small></div><div class="stat"><b id="statNPC">0</b><small>NPC</small></div><div class="stat"><b id="statAnimals">0</b><small>ЖИВОТНЫЕ</small></div></div>
+<div class="status" id="inspect">Создай проект, чтобы увидеть карту.</div>
+</section>
+</div>
+</main>
+</div>
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js";
+const canvas=document.querySelector("#scene");
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+const scene=new THREE.Scene();scene.background=new THREE.Color("#91b9d1");scene.fog=new THREE.Fog("#91b9d1",180,340);
+const camera=new THREE.PerspectiveCamera(48,canvas.clientWidth/canvas.clientHeight,.1,800);camera.position.set(145,115,145);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.target.set(0,0,0);controls.maxPolarAngle=Math.PI*.48;controls.minDistance=35;controls.maxDistance=300;
+scene.add(new THREE.HemisphereLight(0xe7f4ff,0x536047,2));const sun=new THREE.DirectionalLight(0xfff0d7,2.2);sun.position.set(90,150,60);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
+const grid=new THREE.GridHelper(220,22,0x6e8795,0x8298a2);grid.position.y=-.02;scene.add(grid);
+let world=null,worldGroup=new THREE.Group();scene.add(worldGroup);
+const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();let clickable=[];
+function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}new ResizeObserver(resize).observe(canvas);
+function color(v){return new THREE.Color(v||"#888888")}
+function makeWorld(data){
+ world=data;worldGroup.clear();clickable=[];
+ for(const o of data.objects){
+  const [x,y,z]=o.position,[sx,sy,sz]=o.size;
+  const mat=new THREE.MeshStandardMaterial({color:color(o.color),roughness:.88});
+  const geo=new THREE.BoxGeometry(sx,sy,sz);const mesh=new THREE.Mesh(geo,mat);mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;mesh.userData.label=o.name+" · "+o.type;worldGroup.add(mesh);clickable.push(mesh);
+  if(o.type==="tree"){
+   const crown=new THREE.Mesh(new THREE.ConeGeometry(5,9,7),new THREE.MeshStandardMaterial({color:o.canopy||"#347a50"}));crown.position.set(x,y+sy/2+4,z);crown.castShadow=true;worldGroup.add(crown);
+  }
+  if(o.type==="npc"||o.type==="animal"||o.type==="enemy"){
+   const head=new THREE.Mesh(new THREE.SphereGeometry(.95,12,10),new THREE.MeshStandardMaterial({color:"#d7b18b"}));head.position.set(x,y+sy*.5+1.1,z);worldGroup.add(head);
+  }
+ }
+ document.querySelector("#objectCount").textContent=data.objects.length+" объектов";
+ document.querySelector("#statObjects").textContent=data.objects.length;
+ document.querySelector("#statNPC").textContent=data.objects.filter(o=>o.type==="npc").length;
+ document.querySelector("#statAnimals").textContent=data.objects.filter(o=>["animal","enemy"].includes(o.type)).length;
+ document.querySelector("#inspect").textContent="Сцена построена. Нажми на объект, чтобы посмотреть его тип.";
+ controls.target.set(0,0,0);camera.position.set(145,115,145);controls.update();
+}
+canvas.addEventListener("pointerup",e=>{const r=canvas.getBoundingClientRect();pointer.x=((e.clientX-r.left)/r.width)*2-1;pointer.y=-((e.clientY-r.top)/r.height)*2+1;raycaster.setFromCamera(pointer,camera);const hits=raycaster.intersectObjects(clickable);if(hits.length)document.querySelector("#inspect").textContent=hits[0].object.userData.label});
+function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)}animate();
+let current=null;
+window.preset=t=>document.querySelector("#prompt").value=t;
+window.scrollToSection=id=>document.getElementById(id).scrollIntoView({behavior:"smooth"});
+window.resetAll=()=>{current=null;worldGroup.clear();document.querySelector("#result").style.display="none";document.querySelector("#projectFiles").style.display="none";document.querySelector("#prompt").value="";document.querySelector("#objectCount").textContent="0 объектов";document.querySelector("#statObjects").textContent="0";document.querySelector("#statNPC").textContent="0";document.querySelector("#statAnimals").textContent="0";document.querySelector("#inspect").textContent="Создай проект, чтобы увидеть карту."};
+window.generate=async()=>{const prompt=document.querySelector("#prompt").value.trim();if(!prompt){alert("Напиши описание игры.");return}const btn=document.querySelector("#generate");btn.disabled=true;btn.textContent="Создаём мир…";setStatus("Генерируем карту и игровые системы…");try{const r=await fetch("/api/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Ошибка генерации");current=d;makeWorld(d);document.querySelector("#result").style.display="block";document.querySelector("#resultTitle").textContent=d.title;document.querySelector("#resultSummary").textContent=d.summary;const list=document.querySelector("#fileList");list.innerHTML="";for(const [name,src] of Object.entries(d.scripts)){const b=document.createElement("button");b.className="filebtn";b.textContent="▤ "+name;b.onclick=()=>{document.querySelector("#inspect").textContent=name+" · "+src.split("\n").length+" строк Luau"};list.append(b)}document.querySelector("#projectFiles").style.display="block";setStatus("Готово. Можно просмотреть сцену и скачать RBXLX.");}catch(e){setStatus(e.message)}finally{btn.disabled=false;btn.textContent="✦ Создать проект"}};
+function setStatus(t){document.querySelector("#status").textContent=t}
+window.exportProject=async()=>{if(!current)return;setStatus("Подготавливаем RBXLX…");try{const r=await fetch("/api/export",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({world:current})});if(!r.ok)throw new Error((await r.json()).error);const blob=await r.blob();downloadBlob(blob,"Robx-Experience.rbxlx");setStatus("RBXLX скачан. Открой его через Roblox Studio.");}catch(e){setStatus(e.message)}};
+window.downloadScripts=()=>{if(!current)return;const text=Object.entries(current.scripts).map(([n,s])=>"-- "+n+"\n"+s).join("\n\n");downloadBlob(new Blob([text],{type:"text/plain;charset=utf-8"}),"Robx-Luau-Scripts.txt")};
+function downloadBlob(blob,name){const a=document.createElement("a");const url=URL.createObjectURL(blob);a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500)}
+window.openPublish=()=>{document.querySelector("#publishBox").style.display="block";document.querySelector("#result").style.display="block";document.querySelector("#publishBox").scrollIntoView({behavior:"smooth",block:"nearest"})};
+window.publishProject=async()=>{if(!current){setStatus("Сначала создай проект.");return}if(!confirm("Опубликовать текущую версию в Roblox? Это обновит выбранный Place."))return;setStatus("Отправляем place в Roblox Open Cloud…");try{const r=await fetch("/api/publish",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({world:current})});const d=await r.json();if(!r.ok)throw new Error(d.error+(d.details?" "+d.details:""));setStatus("Опубликовано! "+d.result)}catch(e){setStatus(e.message)}};
+</script>
+</body></html>
