@@ -1,6 +1,6 @@
 local Config = {}
 
-Config.FieldSize = 36
+Config.FieldSize = 24
 Config.BlockSize = 4
 Config.MaxDigDistance = 18
 Config.DigCooldown = 0.55
@@ -14,10 +14,10 @@ Config.Shovels = {
 }
 
 Config.Layers = {
-    {Name = "Surface Soil", Health = 1, Color = Color3.fromRGB(115, 83, 57), Material = Enum.Material.Ground, Depth = 0},
-    {Name = "Packed Dirt", Health = 2, Color = Color3.fromRGB(91, 65, 49), Material = Enum.Material.Ground, Depth = 1},
-    {Name = "Stone", Health = 4, Color = Color3.fromRGB(105, 108, 111), Material = Enum.Material.Slate, Depth = 2},
-    {Name = "Deep Rock", Health = 8, Color = Color3.fromRGB(57, 63, 73), Material = Enum.Material.Rock, Depth = 3},
+    {Name = "Surface Soil", Health = 1, Color = Color3.fromRGB(115, 83, 57), Material = Enum.Material.Ground},
+    {Name = "Packed Dirt", Health = 2, Color = Color3.fromRGB(91, 65, 49), Material = Enum.Material.Ground},
+    {Name = "Stone", Health = 4, Color = Color3.fromRGB(105, 108, 111), Material = Enum.Material.Slate},
+    {Name = "Deep Rock", Health = 8, Color = Color3.fromRGB(57, 63, 73), Material = Enum.Material.Rock},
 }
 
 Config.Finds = {
