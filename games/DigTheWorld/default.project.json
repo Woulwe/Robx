@@ -1,0 +1,27 @@
+{
+  "name": "DigTheWorld",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "DigTheWorld": {
+        "$path": "src/ReplicatedStorage/DigTheWorld"
+      }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "DigTheWorldServer": {
+        "$path": "src/ServerScriptService/DigTheWorldServer.server.lua"
+      }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "DigTheWorldClient": {
+          "$path": "src/StarterPlayer/StarterPlayerScripts/DigTheWorldClient.client.lua"
+        }
+      }
+    }
+  }
+}
