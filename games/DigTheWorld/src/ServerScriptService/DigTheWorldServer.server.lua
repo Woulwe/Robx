@@ -37,16 +37,17 @@ local function makePart(parent, name, size, cframe, color, material)
 end
 
 local function layerAt(depth)
-    return Config.Layers[math.clamp(math.floor(depth / 8) + 1, 1, #Config.Layers)]
+    return Config.Layers[math.clamp(math.floor(depth / Config.BlockSize) + 1, 1, Config.MaxLayers)]
 end
 
 local function createField()
     if #field:GetChildren() > 0 then return end
-    local half = Config.FieldSize / 2
-    for x = -half, half - 1 do
-        for z = -half, half - 1 do
-            local block = makePart(field, "DigBlock", Vector3.new(4, 4, 4),
-                CFrame.new(x * 4, 1, z * 4), Config.Layers[1].Color, Config.Layers[1].Material)
+    local first = -math.floor(Config.FieldSize / 2)
+    for xIndex = 0, Config.FieldSize - 1 do
+        for zIndex = 0, Config.FieldSize - 1 do
+            local x, z = first + xIndex, first + zIndex
+            local block = makePart(field, "DigBlock", Vector3.new(Config.BlockSize, Config.BlockSize, Config.BlockSize),
+                CFrame.new(x * Config.BlockSize, 1, z * Config.BlockSize), Config.Layers[1].Color, Config.Layers[1].Material)
             block:SetAttribute("Depth", 0)
             block:SetAttribute("Health", Config.Layers[1].Health)
             block:SetAttribute("IsDiggable", true)
@@ -157,11 +158,14 @@ digEvent.OnServerEvent:Connect(function(player, block)
             Name = found.Name, Value = found.Value, Rarity = found.Rarity
         })
         local layer = layerAt(depth)
-        local replacement = makePart(field, "DigBlock", Vector3.new(4, 4, 4),
-            CFrame.new(position.X, position.Y - 4, position.Z), layer.Color, layer.Material)
-        replacement:SetAttribute("Depth", depth)
-        replacement:SetAttribute("Health", layer.Health)
-        replacement:SetAttribute("IsDiggable", true)
+        if depth < Config.MaxLayers * Config.BlockSize then
+            local replacement = makePart(field, "DigBlock",
+                Vector3.new(Config.BlockSize, Config.BlockSize, Config.BlockSize),
+                CFrame.new(position.X, position.Y - Config.BlockSize, position.Z), layer.Color, layer.Material)
+            replacement:SetAttribute("Depth", depth)
+            replacement:SetAttribute("Health", layer.Health)
+            replacement:SetAttribute("IsDiggable", true)
+        end
     end
     updateStats(player)
 end)
