@@ -1,91 +1,33 @@
 <!doctype html>
-<html lang="ru">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0a1020"><title>Robx Studio — Woulwe</title>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#09111f"><title>Robx Studio — Woulwe</title><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#0a1020;color:#edf3ff;font:15px system-ui,-apple-system,sans-serif}main{max-width:1050px;margin:auto;padding:18px}.brand{color:#55d9e8;font-size:12px;letter-spacing:2px;font-weight:800}.card{background:#142039;border:1px solid #314360;border-radius:16px;padding:16px;margin:14px 0}h1{font-size:30px;margin:8px 0}h3{margin:0 0 12px}p{color:#aabbd3}textarea{width:100%;min-height:120px;background:#091426;color:white;border:1px solid #405578;border-radius:12px;padding:12px;font:inherit;resize:vertical}button{background:#806cff;color:white;border:0;border-radius:10px;padding:12px 15px;margin:8px 6px 0 0;font-weight:700;font-size:14px}button.alt{background:#263956}button:disabled{opacity:.4}canvas{width:100%;height:330px;display:block;border-radius:12px;background:#91b9d1;touch-action:pan-y}#status{color:#75dfc0;min-height:24px;margin-top:10px}.small{font-size:12px;color:#879ab6}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#091426;padding:12px;border-radius:10px;max-height:260px;overflow:auto}@media(max-width:600px){main{padding:12px}h1{font-size:25px}.card{padding:13px}canvas{height:270px}}
-</style></head>
-<body><main>
-<div class="brand">WOULWE · ROBLOX EXPERIENCE BUILDER</div><h1>Robx Studio</h1><p>Опиши идею — Robx анализирует описание и собирает рельеф, биом, районы, объекты и игровые системы.</p>
-<section class="card"><h3>1. Опиши свою игру</h3>
-<textarea id="prompt" placeholder="Например: реалистичное выживание на огромном острове, леса, ресурсы, животные, волки, лагерь, голод и жажда"></textarea>
-<button id="generate">✦ Создать мир</button><button class="alt" id="survival">🌲 Выживание</button><button class="alt" id="rpg">🐉 RPG</button><div id="status" role="status"></div></section>
-<section class="card"><h3>2. Предпросмотр 3D</h3><canvas id="view"></canvas><p id="summary">Сначала создай проект. Вращай сцену пальцем, приближай двумя пальцами.</p><button id="export" disabled>Скачать .rbxlx</button><button class="alt" id="scripts" disabled>Показать Luau</button><div id="scriptbox" hidden><pre id="scripttext"></pre></div></section>
-<section class="card"><h3>3. Опубликовать в Roblox</h3><p>Сначала добавь API key и ID игры в секреты Supabase. Пароль публикации вводится здесь и не сохраняется.</p><input id="publishPassword" type="password" autocomplete="off" placeholder="Пароль публикации" style="width:100%;background:#091426;color:white;border:1px solid #405578;border-radius:10px;padding:12px;font:inherit"><button id="publish" disabled>🚀 Опубликовать мир</button><div id="publishStatus" class="small"></div></section>\n<p class="small">Robx создаёт процедурный рельеф и расставляет объекты по описанию. Для сохранения прогресса в Roblox включи Studio Access to API Services. Это процедурная генерация, не подключённая к большой языковой модели.</p>
-</main>
-<script type="module">
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#09111f;color:#edf3ff;font:15px system-ui}main{max-width:1120px;margin:auto;padding:18px}.brand{color:#67dce7;font-size:12px;letter-spacing:2px;font-weight:800}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}h1{font-size:32px;margin:8px 0}p,.muted{color:#9fb0c8}.layout{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.2fr);gap:14px}.card{background:#121f33;border:1px solid #2a405c;border-radius:18px;padding:16px;margin:14px 0}textarea{width:100%;min-height:180px;background:#071321;color:white;border:1px solid #3b5474;border-radius:12px;padding:13px;font:inherit;resize:vertical}button{background:#7566ed;color:white;border:0;border-radius:11px;padding:12px 15px;margin:8px 5px 0 0;font-weight:750}button.alt{background:#253952}button:disabled{opacity:.4}canvas{width:100%;height:520px;display:block;border-radius:13px;background:#9fc6d5;touch-action:none}#status{min-height:26px;color:#77dfbd;margin-top:12px}.chip{display:inline-block;background:#203650;color:#b8d6ee;border-radius:30px;padding:6px 10px;margin:4px;font-size:12px}pre{white-space:pre-wrap;overflow:auto;max-height:250px;background:#071321;padding:12px;border-radius:10px}.step{font-size:12px;color:#6fdddf;font-weight:800;letter-spacing:1px}.actions{display:flex;flex-wrap:wrap;gap:4px}.note{font-size:12px;line-height:1.6;color:#879bb5}@media(max-width:760px){main{padding:12px}.layout{grid-template-columns:1fr}canvas{height:340px}h1{font-size:26px}}
+</style></head><body><main>
+<div class="top"><div><div class="brand">WOULWE · WORLD CREATION ENGINE</div><h1>Robx Studio</h1><p>Опиши игру обычными словами. Robx разберёт смысл, составит план мира и построит 3D-карту.</p></div><span class="chip">AI Core · без API-ключей</span></div>
+<div class="layout"><section class="card"><div class="step">01 / ЗАДАНИЕ</div><h3>Что будем создавать?</h3><textarea id="prompt" placeholder="Например: огромный реалистичный остров для выживания. Высокие горы, густые леса, реки, пляжи, деревни, пещеры, волки, животные, заброшенная военная база, ресурсы, голод и жажда."></textarea>
+<div class="actions"><button id="generate">✦ Понять запрос и создать</button><button class="alt" id="survival">Выживание</button><button class="alt" id="rpg">Фэнтези RPG</button></div><div id="status" role="status"></div><div id="analysis"></div><p class="note">Robx AI Core работает прямо в браузере. Внешняя нейросеть и секретные ключи не используются. Это собственный семантический движок и процедурный генератор, а не обученная большая языковая модель.</p></section>
+<section class="card"><div class="step">02 / МИР</div><h3>3D-предпросмотр</h3><canvas id="view"></canvas><p id="summary" class="muted">Здесь появится созданный мир. Вращай сцену пальцем, приближай двумя пальцами.</p><div class="actions"><button id="export" disabled>Скачать Roblox .rbxlx</button><button class="alt" id="scripts" disabled>Скрипты Luau</button></div><div id="scriptbox" hidden><pre id="scripttext"></pre></div></section></div>
+<section class="card"><div class="step">03 / ПУБЛИКАЦИЯ</div><h3>Без API-ключей и паролей на сайте</h3><p>Скачай файл проекта и открой его в Roblox Studio. Проверь карту, затем нажми <b>File → Publish to Roblox</b>. Войди в свой Roblox-аккаунт непосредственно в Studio.</p><p class="note">GitHub Pages — статический хостинг: он не может безопасно войти в Roblox и опубликовать игру от имени пользователя. Поэтому Robx не просит ключи, пароли или токены и не отправляет их на сторонние серверы.</p><a href="https://create.roblox.com/" target="_blank" rel="noopener" style="color:#8ed9ff">Открыть Roblox Creator Hub ↗</a></section>
+</main><script type="module">
 import * as THREE from "three";
 import {OrbitControls} from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js";
-const API="https://fktzejpcipjuiuoodmpe.supabase.co/functions/v1/robx-studio";
-const canvas=document.querySelector("#view"),renderer=new THREE.WebGLRenderer({canvas,antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-const scene=new THREE.Scene();scene.background=new THREE.Color("#91b9d1");scene.fog=new THREE.Fog("#91b9d1",180,350);
-const camera=new THREE.PerspectiveCamera(48,1,.1,800);camera.position.set(145,115,145);
-const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.target.set(0,0,0);controls.maxPolarAngle=Math.PI*.48;
-scene.add(new THREE.HemisphereLight(0xffffff,0x536047,2));const sun=new THREE.DirectionalLight(0xfff0d7,2);sun.position.set(90,150,60);scene.add(sun);
-const grid=new THREE.GridHelper(220,22,0x6e8795,0x8298a2);grid.position.y=-.02;scene.add(grid);
+import {buildWorld,analyzePrompt,exportPlace} from "./robx-ai.js";
+const $=s=>document.querySelector(s),canvas=$("#view"),renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.shadowMap.enabled=true;
+const scene=new THREE.Scene();scene.background=new THREE.Color("#a8c9d8");scene.fog=new THREE.Fog("#a8c9d8",210,480);
+const camera=new THREE.PerspectiveCamera(48,1,.1,1000);camera.position.set(180,140,180);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.maxPolarAngle=Math.PI*.49;controls.target.set(0,0,0);
+scene.add(new THREE.HemisphereLight(0xffffff,0x5c694e,2));const sun=new THREE.DirectionalLight(0xfff1d5,2.6);sun.position.set(100,180,80);sun.castShadow=true;scene.add(sun);
 const group=new THREE.Group();scene.add(group);let current=null;
-function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
-new ResizeObserver(resize).observe(canvas);resize();
-function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)}animate();
-function draw(world){
- group.clear();
- const terrain=world.terrain;
- if(terrain?.heights?.length){
-  const n=terrain.segments+1,positions=[],indices=[],colors=[];
-  for(let z=0;z<n;z++)for(let x=0;x<n;x++){
-   const i=z*n+x,px=-terrain.size/2+x*terrain.size/(n-1),pz=-terrain.size/2+z*terrain.size/(n-1),y=terrain.heights[i]??0;
-   positions.push(px,y,pz);
-   const c=new THREE.Color(y>6?"#718b69":y>1?"#648456":"#8c966d");colors.push(c.r,c.g,c.b);
-   if(x<n-1&&z<n-1){const q=i+n;indices.push(i,q,i+1,i+1,q,q+1);}
-  }
-  const geo=new THREE.BufferGeometry();geo.setAttribute("position",new THREE.Float32BufferAttribute(positions,3));geo.setAttribute("color",new THREE.Float32BufferAttribute(colors,3));geo.setIndex(indices);geo.computeVertexNormals();
-  const land=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({vertexColors:true,roughness:1,flatShading:false}));land.receiveShadow=true;group.add(land);
- }
- const mat=(color,roughness=.9)=>new THREE.MeshStandardMaterial({color,roughness});
- const box=(x,y,z,sx,sy,sz,color)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),mat(color));m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;group.add(m);return m};
- const cyl=(x,y,z,r1,r2,h,color,segments=8)=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,segments),mat(color));m.position.set(x,y,z);m.castShadow=true;group.add(m);return m};
- for(const o of world.objects||[]){
-  if(o.type==="terrainTile"||o.type==="spawn")continue;
-  const [x,y,z]=o.position,[sx,sy,sz]=o.size;
-  if(o.type==="water"){const water=new THREE.Mesh(new THREE.CircleGeometry(178,64),new THREE.MeshStandardMaterial({color:o.color,transparent:true,opacity:.78,roughness:.24}));water.rotation.x=-Math.PI/2;water.position.y=-1.7;group.add(water);continue;}
-  if(o.type==="tree"){
-   cyl(x,y,z,.65,.95,sy,o.color,7);
-   if(o.variant%2===0){const crown=new THREE.Mesh(new THREE.ConeGeometry(4.5,8,8),mat(o.canopy));crown.position.set(x,y+sy*.48,z);group.add(crown);const crown2=new THREE.Mesh(new THREE.ConeGeometry(3.5,6,8),mat(o.canopy));crown2.position.set(x,y+sy*.72,z);group.add(crown2);}
-   else {const crown=new THREE.Mesh(new THREE.SphereGeometry(3.8,10,8),mat(o.canopy));crown.position.set(x,y+sy*.48,z);group.add(crown);}
-  }else if(o.type==="rock"){
-   const rock=new THREE.Mesh(new THREE.DodecahedronGeometry(Math.max(sx,sz)*.48,0),mat(o.color));rock.scale.set(1,Math.max(.5,sy/sx),.8);rock.position.set(x,y,z);rock.rotation.set(x*.07,0,z*.06);rock.castShadow=true;group.add(rock);
-  }else if(o.type==="building"){
-   box(x,y,z,sx,sy,sz,o.color);
-   const roof=box(x,y+sy/2+1,z,sx+2,2,sz+2,world.theme==="fantasy"?"#514c69":"#4b5662");
-   if(sx>15){for(let k=-1;k<=1;k++)box(x+k*sx*.27,y+1,z-sz/2-.08,1.5,3,.2,"#b7c6d2");}
-  }else if(o.type==="npc"||o.type==="animal"||o.type==="enemy"){
-   const hostile=o.type==="enemy",bodyColor=o.color;
-   const body=cyl(x,y,z,sy*.25,sy*.34,sy*.58,bodyColor,10);body.rotation.z=Math.PI/2;
-   const head=new THREE.Mesh(new THREE.SphereGeometry(o.type==="npc"?1.05:.9,14,12),mat(o.type==="npc"?"#d6a77e":bodyColor));head.position.set(x,y+sy*.43,z-sz*.3);group.add(head);
-   for(const side of [-1,1]){cyl(x+side*.65,y-sy*.32,z, .18,.22,sy*.35,bodyColor,7);}
-   if(hostile){const eyeMat=mat("#e74d4d");for(const side of [-1,1]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.12,8,8),eyeMat);eye.position.set(x+side*.35,y+sy*.48,z-sz*.52);group.add(eye);}}
-  }else if(o.type==="road"||o.type==="path"||o.type==="dock"){
-   box(x,y,z,sx,sy,sz,o.color);
-  }else if(o.type==="resource"){
-   const m=new THREE.Mesh(new THREE.OctahedronGeometry(1.5,0),mat(o.color));m.position.set(x,y,z);m.scale.set(1,1.2,1);group.add(m);
-  }else if(o.type==="portal"){
-   const ring=new THREE.Mesh(new THREE.TorusGeometry(4.2,.55,12,36),new THREE.MeshStandardMaterial({color:"#c5a2ff",emissive:"#6d36db",emissiveIntensity:1.2}));ring.position.set(x,y,z);group.add(ring);
-  }else if(o.type==="checkpoint"){
-   cyl(x,y,z,.15,.15,sy,o.color,10);const gem=new THREE.Mesh(new THREE.OctahedronGeometry(1.5),new THREE.MeshStandardMaterial({color:o.color,emissive:o.color,emissiveIntensity:.45}));gem.position.set(x,y+sy/2+1,z);group.add(gem);
-  }
- }
- camera.position.set(165,125,165);controls.target.set(0,1,0);controls.update();
-}
-async function post(action,data,extraHeaders={}){const r=await fetch(API+"/"+action,{method:"POST",headers:{"Content-Type":"application/json",...extraHeaders},body:JSON.stringify(data)});if(!r.ok){let e={};try{e=await r.json()}catch{}throw Error(e.error||"Ошибка сервера "+r.status)}return r}
-const $=s=>document.querySelector(s);
-$("#survival").onclick=()=>$("#prompt").value="Реалистичное выживание на огромном острове, густые леса, ресурсы, животные, волки, лагерь, голод, жажда и смена дня и ночи.";
-$("#rpg").onclick=()=>$("#prompt").value="Фэнтези RPG с древним храмом, магическим порталом, NPC, боссом и квестами.";
-$("#generate").onclick=async()=>{const prompt=$("#prompt").value.trim();if(!prompt){$("#status").textContent="Напиши описание игры.";return}const b=$("#generate");b.disabled=true;$("#status").textContent="Анализируем описание и параметры мира…";try{current=await(await post("generate",{prompt})).json();draw(current);$("#summary").textContent=(current.biome?current.biome+" · ":"")+current.summary;$("#export").disabled=false;$("#scripts").disabled=false;$("#publish").disabled=false;$("#status").textContent="Готово! Карта построена. Проверь 3D-просмотр и экспортируй проект."}catch(e){$("#status").textContent=e.message}finally{b.disabled=false}};
-function save(blob,name){const a=document.createElement("a");const u=URL.createObjectURL(blob);a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),2000)}
-$("#export").onclick=async()=>{try{save(await(await post("export",{world:current})).blob(),"Robx-Experience.rbxlx")}catch(e){$("#status").textContent=e.message}};
-$("#scripts").onclick=()=>{const box=$("#scriptbox");box.hidden=!box.hidden;if(!box.hidden)$("#scripttext").textContent=Object.entries(current.scripts||{}).map(([n,s])=>"-- "+n+"\n"+s).join("\n\n")};
-$("#publish").onclick=async()=>{if(!current){$("#publishStatus").textContent="Сначала создай мир.";return}const password=$("#publishPassword").value.trim();if(!password){$("#publishStatus").textContent="Введи пароль публикации.";return}const b=$("#publish");b.disabled=true;$("#publishStatus").textContent="Отправляем мир в Roblox…";try{const result=await(await post("publish",{world:current},{"x-robx-publish-password":password})).json();$("#publishStatus").textContent=result.message+(result.versionNumber?" Версия: "+result.versionNumber:"")}catch(e){$("#publishStatus").textContent=e.message}finally{b.disabled=false}};
+function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}new ResizeObserver(resize).observe(canvas);resize();
+(function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera)})();
+function draw(world){group.clear();const t=world.terrain,n=t.segments+1,verts=[],idx=[],cols=[];for(let z=0;z<n;z++)for(let x=0;x<n;x++){let i=z*n+x,px=-t.size/2+x*t.size/t.segments,pz=-t.size/2+z*t.size/t.segments,y=t.heights[i];verts.push(px,y,pz);let c=new THREE.Color(y>13?"#777c76":y>5?"#718c64":y>0?"#78975f":"#b0a078");cols.push(c.r,c.g,c.b);if(x<t.segments&&z<t.segments){let q=i+n;idx.push(i,q,i+1,i+1,q,q+1)}}const geo=new THREE.BufferGeometry();geo.setAttribute("position",new THREE.Float32BufferAttribute(verts,3));geo.setAttribute("color",new THREE.Float32BufferAttribute(cols,3));geo.setIndex(idx);geo.computeVertexNormals();group.add(new THREE.Mesh(geo,new THREE.MeshStandardMaterial({vertexColors:true,roughness:1})));
+const material=c=>new THREE.MeshStandardMaterial({color:c,roughness:.9}),box=(p,s,c)=>{let m=new THREE.Mesh(new THREE.BoxGeometry(...s),material(c));m.position.set(...p);m.castShadow=true;m.receiveShadow=true;group.add(m)},cylinder=(p,r,h,c)=>{let m=new THREE.Mesh(new THREE.CylinderGeometry(r*.8,r,h,9),material(c));m.position.set(...p);m.castShadow=true;group.add(m)};
+for(const o of world.objects){if(o.type==="spawn")continue;let [x,y,z]=o.position,[sx,sy,sz]=o.size;if(o.type==="water"){let m=new THREE.Mesh(new THREE.PlaneGeometry(sx,sz),new THREE.MeshStandardMaterial({color:o.color,transparent:true,opacity:.72,roughness:.2}));m.rotation.x=-Math.PI/2;m.position.set(x,-1.4,z);group.add(m)}else if(o.type==="tree"){cylinder([x,y,z],.8,sy,o.color);let crown=new THREE.Mesh(o.variant?new THREE.SphereGeometry(4.8,12,10):new THREE.ConeGeometry(5,10,9),material(o.canopy));crown.position.set(x,y+sy*.55,z);group.add(crown)}else if(o.type==="rock"){let m=new THREE.Mesh(new THREE.DodecahedronGeometry(Math.max(sx,sz)*.42),material(o.color));m.scale.y=sy/sx;m.position.set(x,y,z);group.add(m)}else if(o.type==="building"){box([x,y,z],[sx,sy,sz],o.color);box([x,y+sy/2+1,z],[sx+2,2,sz+2],o.roof||"#4b5662")}else if(o.type==="npc"||o.type==="animal"||o.type==="enemy"){cylinder([x,y,z],sy*.27,sy*.65,o.color);let head=new THREE.Mesh(new THREE.SphereGeometry(o.type==="npc"?1.3:1.1,12,10),material(o.color));head.position.set(x,y+sy*.48,z-sz*.28);group.add(head);if(o.boss){let aura=new THREE.Mesh(new THREE.TorusGeometry(6,.5,8,28),material("#d46bdf"));aura.position.set(x,y+5,z);group.add(aura)}}else if(o.type==="path"||o.type==="road")box([x,y,z],[sx,sy,sz],o.color);else if(o.type==="resource"){let m=new THREE.Mesh(new THREE.OctahedronGeometry(1.8),material(o.color));m.position.set(x,y,z);group.add(m)}else if(o.type==="checkpoint"){let m=new THREE.Mesh(new THREE.OctahedronGeometry(2),material(o.color));m.position.set(x,y+2,z);group.add(m)}}
+camera.position.set(t.size*.7,t.size*.58,t.size*.7);controls.target.set(0,0,0);controls.update()}
+$("#survival").onclick=()=>$("#prompt").value="Огромный реалистичный остров для выживания: горы, густые леса, реки, пляжи, деревни, пещеры, животные, волки, заброшенные базы, ресурсы, голод и жажда.";
+$("#rpg").onclick=()=>$("#prompt").value="Большой фэнтези мир RPG: средневековые деревни, горы, древние леса, пещеры, магия, NPC, квесты, дракон-босс и подземелье.";
+$("#generate").onclick=()=>{const prompt=$("#prompt").value.trim();if(!prompt){$("#status").textContent="Сначала опиши игру.";return}const b=$("#generate");b.disabled=true;$("#status").textContent="Robx AI разбирает смысл запроса и планирует карту…";setTimeout(()=>{try{const plan=analyzePrompt(prompt);current=buildWorld(prompt);draw(current);$("#analysis").innerHTML='<span class="chip">Жанр: '+plan.genre+'</span><span class="chip">Биом: '+plan.biome+'</span><span class="chip">Размер: '+plan.scale+'×'+plan.scale+'</span><span class="chip">Параметров: '+plan.tags.length+'</span>';$("#summary").textContent=current.summary;$("#export").disabled=false;$("#scripts").disabled=false;$("#status").textContent="Готово. Смысл запроса разобран, карта построена."}catch(e){$("#status").textContent="Ошибка генерации: "+e.message}finally{b.disabled=false}},30)};
+function download(blob,name){const a=document.createElement("a"),u=URL.createObjectURL(blob);a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),3000)}
+$("#export").onclick=()=>{if(!current)return;const xml=exportPlace(current);download(new Blob([xml],{type:"application/xml"}),"Robx-Experience.rbxlx")};
+$("#scripts").onclick=()=>{const el=$("#scriptbox");el.hidden=!el.hidden;$("#scripttext").textContent=Object.entries(current?.scripts||{}).map(([name,code])=>"-- "+name+"\n"+code).join("\n\n")};
 </script></body></html>
