@@ -1,3 +1,4 @@
+import { generateWorld as generateIslandWorld } from "./src/generator.js";
 // Robx AI Core: deterministic semantic planner. Runs entirely in the browser; no API keys or external AI service.
 const lex = {
  island: ["остров","архипелаг","island"], city:["город","мегаполис","улиц","city","town"], forest:["лес","лесн","джунгл","forest","jungle"], desert:["пустын","саванн","desert"], snow:["снег","лед","арктик","зим","snow","ice"], fantasy:["фэнтези","маг","дракон","эльф","волшеб","fantasy","magic","dragon"], scifi:["космос","футур","космич","sci-fi","space"], survival:["выжив","голод","жажд","survival"], horror:["ужас","хоррор","страш","horror"], medieval:["средневек","замок","рыцар","medieval","castle"], pirate:["пират","кораб","порт","pirate","ship"], war:["войн","военн","база","оруж","war","military"], parkour:["паркур","обби","прыж","obby","parkour"], village:["деревн","посел","ферм","village","farm"], cave:["пещер","шахт","рудник","cave","mine"], river:["река","озер","водопад","ручей","river","lake","waterfall"], mountain:["гор","скал","вершин","mountain","cliff"], beach:["пляж","берег","побереж","beach","coast"], dungeon:["подземел","данж","лабиринт","dungeon"], boss:["босс","дракон","гигант","boss"], animals:["животн","волк","олень","медвед","звер","animal","wolf","deer"], npc:["npc","жител","торгов","персонаж"], quest:["квест","задан","мисси","quest","mission"], roads:["дорог","троп","шоссе","road","path"], realistic:["реалист","реальн","детализ","realistic"], large:["огром","больш","масштаб","гигант","large","huge"]
@@ -16,6 +17,7 @@ export function analyzePrompt(prompt){
  return {genre,biome,scale,tags,objectsWanted,seed:hash(prompt),difficulty:hit(s,["сложн","хардкор","hardcore"])?"hard":"normal",realistic:tags.includes("realistic"),summary:"Распознано: "+genre+" · "+biome+"; "+(objectsWanted.join(", ")||"исследование мира")+".",prompt};
 }
 export function buildWorld(prompt){
+ if(/остров|island|архипелаг|выжив/i.test(prompt)) return generateIslandWorld(prompt);
  const plan=analyzePrompt(prompt),seed=plan.seed,rng=i=>{let x=Math.sin(seed*.00001+i*78.233)*43758.5453;return x-Math.floor(x)};
  const size=plan.scale,segments=64,heights=[],objects=[];
  const island=plan.tags.includes("island")||plan.biome==="temperate-island";
@@ -72,5 +74,10 @@ export function exportPlace(world){
  let id=0,parts=[];
  const part=(name,pos,size,color,shape="Block")=>{const [x,y,z]=pos,[sx,sy,sz]=size;const c=color.replace("#","");const r=parseInt(c.slice(0,2),16)/255,g=parseInt(c.slice(2,4),16)/255,b=parseInt(c.slice(4,6),16)/255;parts.push(`<Item class="Part" referent="RBX${++id}"><Properties><string name="Name">${esc(name)}</string><CoordinateFrame name="CFrame"><X>${x}</X><Y>${y}</Y><Z>${z}</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame><Vector3 name="Size"><X>${sx}</X><Y>${sy}</Y><Z>${sz}</Z></Vector3><Color3 name="Color"><R>${r}</R><G>${g}</G><B>${b}</B></Color3><bool name="Anchored">true</bool><bool name="CanCollide">true</bool><token name="Shape">${shape==="Ball"?1:0}</token></Properties></Item>`)}
  for(const o of world.objects){if(o.type==="water"||o.type==="path"||o.type==="road"||o.type==="resource"||o.type==="checkpoint"||o.type==="building"||o.type==="rock"||o.type==="tree"||o.type==="spawn"){part(o.name,o.position,o.size,o.color)}else if(["npc","animal","enemy"].includes(o.type)){part(o.name+" Body",o.position,o.size,o.color)}}
- return `<?xml version="1.0" encoding="utf-8"?><roblox version="4"><Item class="Workspace" referent="RBX0"><Properties><string name="Name">Workspace</string></Properties>${parts.join("")}</Item></roblox>`;
+ const scriptItems=Object.entries(world.scripts||{}).map(([path,source])=>{
+  const name=path.split("/").pop(),safe=String(source).replaceAll("]]>","]]]]><![CDATA[>");
+  return `<Item class="Script" referent="RBX${++id}"><Properties><string name="Name">${esc(name)}</string><ProtectedString name="Source"><![CDATA[${safe}]]></ProtectedString><bool name="Disabled">false</bool></Properties></Item>`;
+ }).join("");
+ const scriptService=scriptItems?`<Item class="ServerScriptService" referent="RBX90000"><Properties><string name="Name">ServerScriptService</string></Properties>${scriptItems}</Item>`:"";
+ return `<?xml version="1.0" encoding="utf-8"?><roblox version="4"><Item class="Workspace" referent="RBX0"><Properties><string name="Name">Workspace</string></Properties>${parts.join("")}</Item>${scriptService}</roblox>`;
 }
