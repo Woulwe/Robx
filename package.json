@@ -5,6 +5,6 @@
   "description": "Mobile-first Roblox experience generator with RBXLX export and Open Cloud publishing",
   "type": "module",
   "scripts": { "start": "node server.js", "dev": "node --watch server.js", "test": "node --test" },
-  "dependencies": { "express": "^4.21.2", "helmet": "^8.0.0" },
+  "dependencies": { "express": "^4.21.2", "helmet": "^8.0.0", "dotenv": "^16.4.7" },
   "engines": { "node": ">=20" }
 }
