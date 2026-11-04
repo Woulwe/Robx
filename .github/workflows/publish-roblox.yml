@@ -1,0 +1,56 @@
+name: Publish Robx world to Roblox
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download repository files
+        uses: actions/checkout@v4
+
+      - name: Validate place file
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILE="uploads/Robx-Experience.rbxlx"
+          if [ ! -f "$FILE" ]; then
+            echo "::error::File $FILE not found. Upload your exported RBXLX file to this path first."
+            exit 1
+          fi
+          SIZE=$(wc -c < "$FILE")
+          if [ "$SIZE" -gt 10485760 ]; then
+            echo "::error::RBXLX file exceeds Roblox's 10 MB publishing limit."
+            exit 1
+          fi
+          if [ "$SIZE" -eq 0 ]; then
+            echo "::error::RBXLX file is empty."
+            exit 1
+          fi
+
+      - name: Publish place to Roblox Open Cloud
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+          ROBLOX_UNIVERSE_ID: ${{ secrets.ROBLOX_UNIVERSE_ID }}
+          ROBLOX_PLACE_ID: ${{ secrets.ROBLOX_PLACE_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "$ROBLOX_API_KEY" ] || [ -z "$ROBLOX_UNIVERSE_ID" ] || [ -z "$ROBLOX_PLACE_ID" ]; then
+            echo "::error::Missing one or more GitHub Actions secrets: ROBLOX_API_KEY, ROBLOX_UNIVERSE_ID, ROBLOX_PLACE_ID."
+            exit 1
+          fi
+          if [[ ! "$ROBLOX_UNIVERSE_ID" =~ ^[0-9]+$ ]] || [[ ! "$ROBLOX_PLACE_ID" =~ ^[0-9]+$ ]]; then
+            echo "::error::Universe ID and Place ID must contain digits only."
+            exit 1
+          fi
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            --url "https://apis.roblox.com/universes/v1/$ROBLOX_UNIVERSE_ID/places/$ROBLOX_PLACE_ID/versions?versionType=Published" \
+            --header "x-api-key: $ROBLOX_API_KEY" \
+            --header "Content-Type: application/xml" \
+            --data-binary "@uploads/Robx-Experience.rbxlx"
