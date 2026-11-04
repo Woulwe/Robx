@@ -21,7 +21,7 @@
 <h2>1. Опиши игру</h2><div class="muted">Можно написать идею на русском. Генератор распознаёт тематику и строит стартовый мир.</div>
 <textarea id="prompt" class="prompt" placeholder="Например: реалистичное выживание на огромном острове. Леса, хижины, животные, волки, ресурсы, задания, день и ночь, голод и жажда."></textarea>
 <div class="actions"><button class="primary" id="generate" onclick="generate()">✦ Создать проект</button><button class="secondary" onclick="resetAll()">Сбросить</button></div>
-<div class="templates"><button onclick="preset('Выживание на большом острове, густой лес, ресурсы, животные, волки, лагерь и смена дня и ночи.')">🌲 Выживание</button><button onclick="preset('Фэнтези RPG с древним храмом, магическим порталом, NPC, боссом и квестами.')">🐉 RPG</button><button onclick="preset('Большой современный город с дорогами, зданиями, NPC и точками интереса.')">🏙️ Город</button><button onclick="preset('Приключенческая карта с паркуром, препятствиями, контрольными точками и финальной зоной.')">🧩 Обби</button></div>
+<div class="templates"><button onclick="preset('Выживание на большом острове, густой лес, ресурсы, животные, волки, лагерь и смена дня и ночи.')">🌲 Выживание</button><button onclick="preset('Фэнтези RPG с древним храмом, магическим порталом, NPC, боссом и квестами.')">🐉 RPG</button><button onclick="preset('Большой современный город с дорогами, зданиями, NPC и точками интереса.')">🏙️ Город</button><button onclick="presetIsland()">🏝️ Островная сцена</button><button onclick="preset('Приключенческая карта с паркуром, препятствиями, контрольными точками и финальной зоной.')">🧩 Обби</button></div>
 <div id="result" class="result"><div class="resultTitle" id="resultTitle">Проект готов</div><div class="muted" id="resultSummary"></div><div class="actions" style="margin-top:12px"><button class="primary" onclick="exportProject()">⬇ Скачать .rbxlx</button><button class="secondary" onclick="downloadScripts()">Скачать Luau</button></div><div class="actions" style="margin-top:8px"><button class="ghost" onclick="openPublish()">↗ Опубликовать в Roblox</button></div><div id="publishBox" class="modal"><b style="font-size:12px">Публикация в Roblox</b><p class="small">Ключ хранится только на сервере. Настрой переменные окружения ROBLOX_API_KEY, ROBLOX_UNIVERSE_ID и ROBLOX_PLACE_ID. Не вставляй секретный ключ сюда.</p><button class="primary" onclick="publishProject()">Опубликовать текущий проект</button></div><div class="status" id="status"></div></div>
 <div class="files" id="projectFiles"><b style="font-size:12px">Luau-файлы проекта</b><div id="fileList"></div></div>
 <div class="footer">Экспорт создаёт стартовую сцену и скрипты. Проверь проект в Roblox Studio перед публикацией. Анимированные модели и полноценная игровая логика требуют дальнейшей доработки.</div>
@@ -52,6 +52,22 @@ function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setS
 function color(v){return new THREE.Color(v||"#888888")}
 function makeWorld(data){
  world=data;worldGroup.clear();clickable=[];
+ if(data.terrain?.heights?.length){
+  const t=data.terrain,n=t.segments+1,verts=[],colors=[],indices=[];
+  const palette={snow:"#e2e9e8",desert:"#c9a66e",coast:"#b7a27b",forest:"#537a4e"};
+  for(let z=0;z<n;z++)for(let x=0;x<n;x++){
+   const i=z*n+x,px=-t.size/2+x*t.size/t.segments,pz=-t.size/2+z*t.size/t.segments,y=t.heights[i];
+   verts.push(px,y,pz);
+   const biome=t.biomes?.[i]||(y>19?"snow":y<1?"coast":"forest");
+   const col=new THREE.Color(palette[biome]||palette.forest);if(y>25)col.lerp(new THREE.Color("#e8eeee"),.62);
+   colors.push(col.r,col.g,col.b);
+   if(x<t.segments&&z<t.segments){const q=i+n;indices.push(i,q,i+1,i+1,q,q+1)}
+  }
+  const geo=new THREE.BufferGeometry();geo.setAttribute("position",new THREE.Float32BufferAttribute(verts,3));geo.setAttribute("color",new THREE.Float32BufferAttribute(colors,3));geo.setIndex(indices);geo.computeVertexNormals();
+  const land=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({vertexColors:true,roughness:1,side:THREE.DoubleSide}));land.receiveShadow=true;land.userData.label="Остров · рельеф";worldGroup.add(land);clickable.push(land);
+  const sea=new THREE.Mesh(new THREE.PlaneGeometry(t.size*1.24,t.size*1.24),new THREE.MeshStandardMaterial({color:"#176d83",roughness:.35}));
+  sea.rotation.x=-Math.PI/2;sea.position.y=-3.5;worldGroup.add(sea);
+ }
  for(const o of data.objects){
   const [x,y,z]=o.position,[sx,sy,sz]=o.size;
   const mat=new THREE.MeshStandardMaterial({color:color(o.color),roughness:.88});
@@ -74,6 +90,7 @@ canvas.addEventListener("pointerup",e=>{const r=canvas.getBoundingClientRect();p
 function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)}animate();
 let current=null;
 window.preset=t=>document.querySelector("#prompt").value=t;
+window.presetIsland=()=>{document.querySelector("#prompt").value="Огромный реалистичный остров для выживания: в центре заснеженные горы, на севере снежная зона, на юго-востоке пустыня и промышленная база, густые леса, реки, озёра, порты, деревни, дороги, маяки, дикие животные, NPC, ресурсы, голод и жажда.";window.generate()};
 window.scrollToSection=id=>document.getElementById(id).scrollIntoView({behavior:"smooth"});
 window.resetAll=()=>{current=null;worldGroup.clear();document.querySelector("#result").style.display="none";document.querySelector("#projectFiles").style.display="none";document.querySelector("#prompt").value="";document.querySelector("#objectCount").textContent="0 объектов";document.querySelector("#statObjects").textContent="0";document.querySelector("#statNPC").textContent="0";document.querySelector("#statAnimals").textContent="0";document.querySelector("#inspect").textContent="Создай проект, чтобы увидеть карту."};
 window.generate=async()=>{const prompt=document.querySelector("#prompt").value.trim();if(!prompt){alert("Напиши описание игры.");return}const btn=document.querySelector("#generate");btn.disabled=true;btn.textContent="Создаём мир…";setStatus("Генерируем карту и игровые системы…");try{const r=await fetch("/api/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Ошибка генерации");current=d;makeWorld(d);document.querySelector("#result").style.display="block";document.querySelector("#resultTitle").textContent=d.title;document.querySelector("#resultSummary").textContent=d.summary;const list=document.querySelector("#fileList");list.innerHTML="";for(const [name,src] of Object.entries(d.scripts)){const b=document.createElement("button");b.className="filebtn";b.textContent="▤ "+name;b.onclick=()=>{document.querySelector("#inspect").textContent=name+" · "+src.split("\n").length+" строк Luau"};list.append(b)}document.querySelector("#projectFiles").style.display="block";setStatus("Готово. Можно просмотреть сцену и скачать RBXLX.");}catch(e){setStatus(e.message)}finally{btn.disabled=false;btn.textContent="✦ Создать проект"}};
