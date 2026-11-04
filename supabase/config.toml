@@ -1,0 +1,4 @@
+project_id = "fktzejpcipjuiuoodmpe"
+
+[functions.robx-studio]
+verify_jwt = false
