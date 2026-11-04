@@ -108,18 +108,22 @@ player.CharacterAdded:Connect(function(character)
   humanoid.WalkSpeed = 16
 end)
 `;
-const npcController = `-- Simple server-side ambient NPC movement.
-local CollectionService = game:GetService("CollectionService")
-for _, npc in ipairs(CollectionService:GetTagged("RobxNPC")) do
-  task.spawn(function()
-    local humanoid = npc:FindFirstChildOfClass("Humanoid")
-    local root = npc:FindFirstChild("HumanoidRootPart")
-    if not humanoid or not root then return end
-    while npc.Parent do
-      local offset = Vector3.new(math.random(-12,12), 0, math.random(-12,12))
-      humanoid:MoveTo(root.Position + offset)
-      task.wait(math.random(4,8))
+const npcController = `-- Adds a working interaction prompt to generated NPC placeholder models.
+local Workspace = game:GetService("Workspace")
+for _, npc in ipairs(Workspace:GetChildren()) do
+  if npc:IsA("Model") and string.find(npc.Name, "NPC") then
+    local body = npc:FindFirstChild("Guide NPC Body") or npc:FindFirstChildWhichIsA("BasePart")
+    if body and not body:FindFirstChildOfClass("ProximityPrompt") then
+      local prompt = Instance.new("ProximityPrompt")
+      prompt.ActionText = "Поговорить"
+      prompt.ObjectText = npc.Name
+      prompt.HoldDuration = 0.25
+      prompt.MaxActivationDistance = 12
+      prompt.Parent = body
+      prompt.Triggered:Connect(function(player)
+        print(player.Name .. " поговорил с " .. npc.Name)
+      end)
     end
-  end)
+  end
 end
 `;
