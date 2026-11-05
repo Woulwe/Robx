@@ -1,5 +1,6 @@
 const esc = (s) => String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
 const rgb = (hex) => { const h = String(hex || "#888888").replace("#",""); return [0,2,4].map(i => parseInt(h.slice(i,i+2),16) || 0); };
+
 function part(item, ref) {
   const [x,y,z] = item.position, [sx,sy,sz] = item.size, [r,g,b] = rgb(item.color);
   return `<Item class="Part" referent="RBX${ref}"><Properties>
@@ -9,6 +10,7 @@ function part(item, ref) {
     <Color3uint8 name="Color3uint8">${r}, ${g}, ${b}</Color3uint8><token name="Material">256</token>
   </Properties></Item>`;
 }
+
 function modelItem(o, ref) {
   const [x,y,z] = o.position, [sx,sy,sz] = o.size;
   const humanoid = o.type === "npc" ? '<Item class="Humanoid" referent="RBX'+(ref+3)+'"><Properties><string name="Name">Humanoid</string></Properties></Item>' : "";
@@ -19,14 +21,45 @@ function modelItem(o, ref) {
     ${humanoid}
   </Item>`;
 }
+
 function scriptItem(name, source, ref, localScript = false) {
   const klass = localScript ? "LocalScript" : "Script";
   return `<Item class="${klass}" referent="RBX${ref}"><Properties><string name="Name">${esc(name)}</string><ProtectedString name="Source"><![CDATA[${String(source).replaceAll("]]>","]]]]><![CDATA[>")}]]></ProtectedString><bool name="Disabled">false</bool></Properties></Item>`;
 }
+
+// The exported place contains visible, editable ground geometry in Workspace.
+// It does not depend on a server script running before the map becomes visible.
+function terrainParts(world, nextRef) {
+  const terrain = world.terrain;
+  if (!terrain || !Array.isArray(terrain.heights) || !terrain.segments || !terrain.size) return { xml: "", nextRef };
+  const n = terrain.segments + 1;
+  const step = terrain.size / terrain.segments;
+  const tiles = [];
+  for (let z = 0; z < terrain.segments; z++) {
+    for (let x = 0; x < terrain.segments; x++) {
+      const i = z*n+x;
+      const h = (terrain.heights[i] + terrain.heights[i+1] + terrain.heights[i+n] + terrain.heights[i+n+1]) / 4;
+      if (!Number.isFinite(h) || h < -0.8) continue;
+      const color = h > 19 ? "#dce5e9" : h > 12 ? "#858b8b" : (x > terrain.segments*.66 && z > terrain.segments*.66) ? "#c7a36b" : "#668b59";
+      const thickness = Math.max(2, h + 3);
+      tiles.push(part({
+        name: h > 19 ? "Terrain Snow" : h > 12 ? "Terrain Rock" : "Terrain Grass",
+        position: [-terrain.size/2+(x+.5)*step, h-thickness/2, -terrain.size/2+(z+.5)*step],
+        size: [step+0.15, thickness, step+0.15],
+        color
+      }, nextRef++));
+    }
+  }
+  return { xml: tiles.join("\n"), nextRef };
+}
+
 export function buildPlaceXml(world) {
   let ref = 100;
   const workspace = [];
-  for (const o of world.objects.slice(0, 500)) {
+  const ground = terrainParts(world, ref);
+  workspace.push(ground.xml);
+  ref = ground.nextRef;
+  for (const o of (world.objects || []).slice(0, 500)) {
     if (["npc","animal","enemy"].includes(o.type)) {
       workspace.push(modelItem(o, ref)); ref += 10;
     } else if (o.type === "tree") {
