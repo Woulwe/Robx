@@ -16,6 +16,8 @@ test("RBXLX export contains workspace, models and scripts", () => {
   const xml = buildPlaceXml(world);
   assert.match(xml, /<roblox version="4">/);
   assert.match(xml, /class="Workspace"/);
+  assert.match(xml, /Terrain Grass/);
+  assert.ok((xml.match(/Terrain Grass/g) || []).length > 100, "RBXLX must contain static terrain parts, not only a runtime script");
   assert.match(xml, /class="Model"/);
   assert.match(xml, /class="ServerScriptService"/);
   assert.match(xml, /<ProtectedString name="Source">/);
